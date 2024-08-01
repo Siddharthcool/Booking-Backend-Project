@@ -11,7 +11,8 @@ const { CreateNewCityInDbService } = require ('./src/service/City.Service');
 //importing the files 
 const CityRouter = require('./src/router/City.Router');
 const UserRouter = require('./src/router/User.Router');
-const AdventureRouter = require('./src/router/Adventure.Router')
+const AdventureRouter = require('./src/router/Adventure.Router');
+const AdventureDetailsRouter = require('./src/router/AdventureDetails.Router');
 
 const PORT = process.env.PORT
 const NODE_ENV = process.env.NODE_ENV
@@ -23,6 +24,12 @@ server.use(express.json());
 server.use("/cities",CityRouter);
 server.use("/user",UserRouter);
 server.use("/adventure",AdventureRouter);
+server.use("/adventure/details",AdventureDetailsRouter);
+server.use("*",(request,response) =>{
+    response.status(404).json({
+        success:false,
+        message:"Route not found"})
+})
 
 
 server.listen(PORT, () => {
