@@ -10,7 +10,7 @@ const { CreateNewCityInDbService } = require ('./src/service/City.Service');
 
 //importing the files 
 const CityRouter = require('./src/router/City.Router');
-const UserRouter = require('./src/router/User.Router');
+const AuthenticationRouter = require('./src/router/Authentication.Router');
 const AdventureRouter = require('./src/router/Adventure.Router');
 const AdventureDetailsRouter = require('./src/router/AdventureDetails.Router');
 
@@ -22,7 +22,7 @@ CreateNewCityInDbService("Raipur", "http://images.com/img1.png", "100+ places" ,
 server.use(express.json());
 
 server.use("/cities",CityRouter);
-server.use("/user",UserRouter);
+server.use("/auth",AuthenticationRouter);
 server.use("/adventure",AdventureRouter);
 server.use("/adventure/details",AdventureDetailsRouter);
 server.use("*",(request,response) =>{
