@@ -28,4 +28,27 @@ async function CreateNewUserInDbService(name,email,encryptedPassword){
 
 }
 
-module.exports= {CreateNewUserInDbService}
+async function GetUserByEmailFromDbService(email){
+
+    try{
+        const result = await UserModel.find({
+            email
+        })
+
+        if(result.length){
+            return {
+                success: true,
+                data:result[0]
+            }}else{
+                throw new Error("GetUserByEmailFromDbService unable to find user");
+            }
+        }catch(error){
+        console.log(error);
+        return {
+            success:false
+        }
+    }
+    }
+
+
+module.exports= {CreateNewUserInDbService,GetUserByEmailFromDbService}

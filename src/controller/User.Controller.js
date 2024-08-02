@@ -1,4 +1,4 @@
-const {CreateNewUserInDbService} = require("./../service/User.Service")
+const {CreateNewUserInDbService ,GetUserByEmailFromDbService} = require("./../service/User.Service")
 const bcrypt = require("bcrypt");
 
 async function CreateNewUserController(req, res) {
@@ -38,6 +38,51 @@ async function CreateNewUserController(req, res) {
     }
 }
 
+async function SigninUserController(req, res) {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            const err = new Error("email and password are required");
+            err.status = 400;
+            throw err;
+        }
+
+        //step1: we have to verify the email and password
+        const userResult = await GetUserByEmailFromDbService(email);
+
+        if (!userResult.success) {
+            const err = new Error("Invalid Credentials");
+            err.status = 400;
+            throw err;
+        }
+
+        //checking password
+        const { password: encryptedPassword } = userResult.data;
+
+        const passwordCompareResult = bcrypt.compareSync(
+            password,
+            encryptedPassword
+        );
+
+        if (!passwordCompareResult) {
+            const err = new Error("Invalid email or password");
+            err.status = 400;
+            throw err;
+        }else{
+            console.log("success");
+        }
+
+        //step2: we will generate the token and send back to the user
+    } catch (error) {
+        console.log(error);
+        res.status(error.status ? error.status : 500).json({
+            success: false,
+            message: error.status ? error.status : "something went wrong",
+        });
+    }
+}
+
 module.exports = {
     CreateNewUserController,
+    SigninUserController
 };
