@@ -1,10 +1,17 @@
 const express = require("express");
 const {
-  CreateAdventureDetailController,
+    CreateAdventureDetailController,
 } = require("../controller/AdventureDetails.Controller");
+const {
+    AdminAuthorizationMiddleware,
+} = require("..//Middleware/Authorisation.Middleware");
 
 const AdventureDetailRouter = express.Router();
 
-AdventureDetailRouter.post("/add", CreateAdventureDetailController);
+AdventureDetailRouter.post(
+    "/add",
+    AdminAuthorizationMiddleware,
+    CreateAdventureDetailController
+);
 
 module.exports = AdventureDetailRouter;

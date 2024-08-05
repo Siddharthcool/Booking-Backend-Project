@@ -1,27 +1,24 @@
 const mongoose = require("mongoose");
 
-// schema is the blueprint of model
-const CitySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  cuisines: {
-    type: [String],
-    required: true,
-  },
+//schema is like a blueprint of model
+const citySchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    image: {
+        type: String,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    cuisines: {
+        type: [String],
+    },
 });
 
-
-var CityModel = mongoose.model("cities", CitySchema);
-
+const CityModel = mongoose.model("cities", citySchema);
 
 module.exports = CityModel;

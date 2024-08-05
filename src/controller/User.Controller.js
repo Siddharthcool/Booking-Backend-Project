@@ -1,11 +1,17 @@
-const {CreateNewUserInDbService ,GetUserByEmailFromDbService} = require("./../service/User.Service")
+const {
+    createNewUserInDbService,
+    getUserByEmailFromDbService,
+} = require("../service/User.Service");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
+const jwt_secret_key = process.env.JWT_SECRET_KEY;
 async function CreateNewUserController(req, res) {
     try {
         const { name, email, password } = req.body;
         if (!name || !email || !password) {
-            res.status(404).json({
+            res.status(400).json({
                 success: false,
                 message: "email, name or password is required",
             });
@@ -15,7 +21,7 @@ async function CreateNewUserController(req, res) {
         const SALT = bcrypt.genSaltSync(10);
         const encryptedPassword = bcrypt.hashSync(password, SALT);
 
-        const result = await CreateNewUserInDbService(
+        const result = await createNewUserInDbService(
             name,
             email,
             encryptedPassword
@@ -48,7 +54,7 @@ async function SigninUserController(req, res) {
         }
 
         //step1: we have to verify the email and password
-        const userResult = await GetUserByEmailFromDbService(email);
+        const userResult = await getUserByEmailFromDbService(email);
 
         if (!userResult.success) {
             const err = new Error("Invalid Credentials");
@@ -57,7 +63,7 @@ async function SigninUserController(req, res) {
         }
 
         //checking password
-        const { password: encryptedPassword } = userResult.data;
+        const { password: encryptedPassword, _id: userId } = userResult.data;
 
         const passwordCompareResult = bcrypt.compareSync(
             password,
@@ -68,11 +74,21 @@ async function SigninUserController(req, res) {
             const err = new Error("Invalid email or password");
             err.status = 400;
             throw err;
-        }else{
-            console.log("success");
         }
 
         //step2: we will generate the token and send back to the user
+        const PAYLOAD = {
+            userId: userId,
+        };
+
+        const token = jwt.sign(PAYLOAD, jwt_secret_key, {
+            expiresIn: "1h",
+        });
+
+        res.status(201).json({
+            success: true,
+            token,
+        });
     } catch (error) {
         console.log(error);
         res.status(error.status ? error.status : 500).json({
@@ -84,5 +100,5 @@ async function SigninUserController(req, res) {
 
 module.exports = {
     CreateNewUserController,
-    SigninUserController
+    SigninUserController,
 };

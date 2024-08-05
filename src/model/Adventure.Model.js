@@ -1,38 +1,36 @@
 const mongoose = require("mongoose");
 
 const adventureSchema = mongoose.Schema({
-
-    name :{
-        type : String,
-        required : true
-    },
-    cityId:{
+    cityId: {
         type: mongoose.Schema.Types.ObjectId,
-        required : true
+        ref: "cities",
+        required: true,
     },
-    category :{
-        type:[String],
-        required:true
+    name: {
+        type: String,
+        required: true,
     },
-    images:{
-        type:[String],
-        required:true
+    category: {
+        type: [String],
     },
-    duration:{
-        type:Number,
-        required:true
+    images: {
+        type: [String],
+        required: true,
     },
-    pricePerHead :{
+    duration: {
         type: Number,
-        required:true
+        required: true,
     },
-    currency:{
-        type:String,
-        default : "INR"
-    }
-
+    pricePerHead: {
+        type: Number,
+        required: true,
+    },
+    currency: {
+        type: String,
+        default: "INR",
+    },
 });
 
-var adventureModel = mongoose.model("adventure" , adventureSchema);
+const AdventureModel = mongoose.model("adventure", adventureSchema);
 
-module.exports = adventureModel;
+module.exports = AdventureModel;

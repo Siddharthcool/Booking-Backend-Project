@@ -1,14 +1,19 @@
-const express = require ('express');
-
-const {CreateMewCityController , GetAllCitiesController , UpdateCityController , DeleteCityController}  = require("./../controller/City.Controller");
+const express = require("express");
+const {
+    CreateNewCityController,
+    GetAllTheCitiesController,
+    UpdateCityController,
+    DeleteCityController,
+} = require("../controller/City.Controller");
+const {
+    AdminAuthorizationMiddleware,
+} = require("../Middleware/Authorisation.Middleware");
 
 const CityRouter = express.Router();
 
-CityRouter.post("/add", CreateMewCityController)
-CityRouter.get("/all",GetAllCitiesController)
-CityRouter.put("/update",UpdateCityController)
-CityRouter.delete("/delete",DeleteCityController)
+CityRouter.post("/add", AdminAuthorizationMiddleware, CreateNewCityController);
+CityRouter.get("/all", GetAllTheCitiesController);
+CityRouter.put("/update", AdminAuthorizationMiddleware, UpdateCityController);
+CityRouter.delete("/delete", DeleteCityController);
 
 module.exports = CityRouter;
-
-
